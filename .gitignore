@@ -1,0 +1,14 @@
+# gradle
+.gradle/
+build/
+
+# IDE
+*.iml
+.idea/
+.vscode/
+
+# system
+.DS_Store
+
+# logs
+*.log
