@@ -22,6 +22,6 @@ public class DialogueController {
 
     @PostMapping("/response")
     public String getResponse(@RequestBody String responseText) {
-        return "{"score": 80, "feedback": "이성적이고 좋은 반박입니다!", "type": "공감형"}";
+        return "{\"score\": 80, \"feedback\": \"이성적이고 좋은 반박입니다!\", \"type\": \"공감형\"}";
     }
 }
