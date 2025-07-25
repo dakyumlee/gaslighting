@@ -1,13 +1,12 @@
 package com.gaslab.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@Table(name = "situations")
+@Table(name = "SITUATIONS")
 public class Situation {
 
     @Id

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -35,11 +34,36 @@ public class DialogueController {
             .toList();
     }
 
+    @PostMapping("/dialogue/save")
+    public Map<String, String> saveDialogue(@RequestBody Map<String, String> request) {
+        String sender = request.get("sender");
+        String message = request.get("message");
+        
+        DialogueLog log = new DialogueLog();
+        log.setSender(sender);
+        log.setMessage(message);
+        
+        logRepository.save(log);
+        
+        return Map.of("status", "success");
+    }
+
     @PostMapping("/dialogue/generate")
     public Map<String, String> generateReply(@RequestBody Map<String, String> request) {
         String userText = request.get("text");
 
         String aiReply = "그래서 결국 너 탓이라는 거야.";
+        
+        DialogueLog aiLog = new DialogueLog();
+        aiLog.setSender("ai");
+        aiLog.setMessage(aiReply);
+        logRepository.save(aiLog);
+        
         return Map.of("aiReply", aiReply);
+    }
+
+    @GetMapping("/dialogues")
+    public List<Map<String, String>> getDialoguesBySituation(@RequestParam String situation) {
+        return List.of();
     }
 }
