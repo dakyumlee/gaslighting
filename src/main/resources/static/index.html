@@ -14,142 +14,120 @@
     body {
       font-family: 'ChosunGu', sans-serif;
       background-color: #fff7f0;
-      color: #333;
       margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 600px;
+      margin: auto;
       padding: 20px;
     }
 
     h1 {
       text-align: center;
-      font-size: 2rem;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
 
-    .container {
-      display: grid;
-      gap: 20px;
-      max-width: 600px;
-      margin: auto;
+    .chat-window {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      background-color: #fff3f3;
+      border-radius: 12px;
     }
 
-    select {
+    .message {
+      max-width: 70%;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 15px;
+      font-size: 1rem;
+      white-space: pre-line;
+    }
+
+    .ai {
+      background: #ffd2d2;
+      align-self: flex-start;
+    }
+
+    .user {
+      background: #c7ffd2;
+      align-self: flex-end;
+    }
+
+    .input-box {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    input {
+      flex: 1;
       padding: 12px;
       border-radius: 12px;
       border: 1px solid #ccc;
       font-family: 'ChosunGu';
-      font-size: 1rem;
-      background-color: #fff;
     }
 
     button {
-      padding: 14px;
+      padding: 12px 20px;
       border: none;
       border-radius: 12px;
       background-color: #ff8989;
       color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
       font-family: 'ChosunGu';
+      cursor: pointer;
     }
 
     button:hover {
       background-color: #e26b6b;
     }
-
-    #result {
-      margin-top: 30px;
-      background: #fff3f3;
-      border-radius: 12px;
-      padding: 20px;
-      font-size: 1.1rem;
-      white-space: pre-line;
-    }
   </style>
 </head>
 <body>
-  <h1>🧪 가스라이팅 실험실 🧪</h1>
   <div class="container">
-    <select id="situation">
-      <option value="">상황을 선택하세요</option>
-    </select>
+    <h1>🧪 가스라이팅 실험실 🧪</h1>
 
-    <select id="statement">
-      <option value="">상대방의 말을 선택하세요</option>
-    </select>
+    <div class="chat-window" id="chatWindow">
+      <div class="message ai">왜 이렇게 늦게 연락했어?</div>
+    </div>
 
-    <select id="dialogue">
-      <option value="">당신의 반응을 선택하세요</option>
-    </select>
-
-    <button onclick="generateGaslighting()">가스라이팅 생성하기</button>
-
-    <div id="result"></div>
+    <div class="input-box">
+      <input type="text" id="userInput" placeholder="당신의 반응은?">
+      <button onclick="sendReply()">보내기</button>
+    </div>
   </div>
 
   <script>
-    async function fetchOptions(endpoint, selectId) {
-      const res = await fetch(endpoint)
-      const data = await res.json()
-      const select = document.getElementById(selectId)
-      data.forEach(item => {
-        const option = document.createElement('option')
-        option.value = item.id
-        option.text = item.name
-        select.appendChild(option)
-      })
+    function appendMessage(text, sender) {
+      const msg = document.createElement('div')
+      msg.className = 'message ' + sender
+      msg.innerText = text
+      document.getElementById('chatWindow').appendChild(msg)
+      msg.scrollIntoView({ behavior: 'smooth' })
     }
 
-   async function generateGaslighting() {
-        const situation = document.getElementById('situation').selectedOptions[0]?.text
-        const statement = document.getElementById('statement').selectedOptions[0]?.text
-        const dialogue = document.getElementById('dialogue').selectedOptions[0]?.text
-      
-        const resultDiv = document.getElementById('result')
-        const finalText = `"${situation}" 상황에서\n상대방은 "${statement}"라고 말했고\n너는 "${dialogue}"라고 반응했어\n\n그래서 지금 이렇게 된 거야... 피이~`
-        resultDiv.innerText = finalText
-      
-        await fetch('http://localhost:9090/api/dialogue/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sender: 'user',
-            message: finalText
-          })
-        })
-      }
-      
-    fetchOptions('/api/situations', 'situation')
-    fetchOptions('/api/statements', 'statement')
-    fetchOptions('/api/dialogues', 'dialogue')
+    async function sendReply() {
+      const input = document.getElementById('userInput')
+      const text = input.value.trim()
+      if (!text) return
 
-    fetch('http://localhost:9090/api/dialogue/generate', {
+      appendMessage(text, 'user')
+
+      await fetch('/api/dialogue/save', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          text: '왜 연락 안 해?'
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sender: 'user', message: text })
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data.aiReply)
-        })
 
-        const handleFight = async () => {
-            if (!situation) return
-            const res = await fetch('/api/dialogue/generate', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text: situation })
-            })
-            const data = await res.json()
-            setLog([...log, { user: situation, ai: data.aiReply }])
-            setSituation('')
-          }
-          
-      
+      input.value = ''
+    }
   </script>
 </body>
 </html>
