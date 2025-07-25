@@ -1,0 +1,37 @@
+@font-face {
+    font-family: 'SunBatang-Light';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/SunBatang-Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'SunBatang-Light';
+    padding: 20px;
+    background: #fffbe6;
+    color: #333;
+  }
+  h1 {
+    color: #d9534f;
+  }
+  section {
+    font-family: 'SunBatang-Light';
+    margin: 20px 0;
+  }
+  select {
+    font-family: 'SunBatang-Light';
+    font-size: 1rem;
+    padding: 5px;
+  }
+  ul {
+    font-family: 'SunBatang-Light';
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    background: #f9f9f9;
+    margin: 5px 0;
+    padding: 10px;
+    border-left: 5px solid #d9534f;
+  }
+  
