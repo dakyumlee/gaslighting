@@ -1,10 +1,16 @@
 spring:
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/oracle-free
-    username: system
+    url: jdbc:oracle:thin:@localhost:1521:FREE
+    username: gaslab
     password: 1234
+      web:
+    resources:
+      add-mappings: true
+      static-locations: classpath:/static/
 
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: true
+server:
+  port: 9090

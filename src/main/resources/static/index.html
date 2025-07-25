@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>가스라이팅 시뮬레이터</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #fdf6f6;
+      text-align: center;
+    }
+    h1 {
+      color: #a22;
+    }
+    select, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin: 1rem;
+    }
+    .result {
+      margin-top: 2rem;
+      font-weight: bold;
+      color: #333;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <h1>가스라이팅 시뮬레이터</h1>
+  <select id="situationSelect">
+    <option value="">상황을 선택하세요</option>
+  </select>
+  <button onclick="fetchStatements()">가스 시작하기</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    // 상황 리스트 불러오기
+    async function loadSituations() {
+      try {
+        const res = await fetch('/api/situations')
+        const situations = await res.json()
+        const select = document.getElementById('situationSelect')
+
+        situations.forEach(s => {
+          const option = document.createElement('option')
+          option.value = s.name
+          option.text = s.name
+          select.appendChild(option)
+        })
+      } catch (err) {
+        alert('상황 데이터를 불러오는 데 실패했어 ㅋㅋㅈㄴ')
+        console.error(err)
+      }
+    }
+
+    async function fetchStatements() {
+      const situation = document.getElementById('situationSelect').value
+      const resultBox = document.getElementById('result')
+
+      if (!situation) {
+        resultBox.innerText = '상황을 선택하라구~ ㅋㅋ'
+        return
+      }
+
+      try {
+        const res = await fetch(`/api/statements?situation=${encodeURIComponent(situation)}`)
+        if (!res.ok) throw new Error('서버 응답 에러났어요~ 퉤엣')
+
+        const data = await res.json()
+        if (data.length === 0) {
+          resultBox.innerText = '이런... 문장이 없다니 실망이야 시이~발'
+        } else {
+          resultBox.innerText = data.map((s, i) => `${i + 1}. ${s}`).join('\n')
+        }
+      } catch (err) {
+        resultBox.innerText = '에러! 백 확인하라구~'
+        console.error(err)
+      }
+    }
+
+    loadSituations()
+  </script>
+</body>
+</html>

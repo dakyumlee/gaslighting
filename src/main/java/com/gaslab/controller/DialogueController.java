@@ -1,27 +1,29 @@
 package com.gaslab.controller;
 
+import com.gaslab.model.Statement;
+import com.gaslab.model.Situation;
+import com.gaslab.repository.StatementRepository;
+import com.gaslab.repository.SituationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class DialogueController {
 
-    @GetMapping("/situations")
-    public String[] getSituations() {
-        return new String[]{"연애", "가족", "알바", "직장"};
-    }
+    private final StatementRepository statementRepository;
+    private final SituationRepository situationRepository;
 
-    @GetMapping("/statements")
-    public String[] getStatements(@RequestParam String situation) {
-        return new String[]{
-            "너는 왜 그렇게 예민해?",
-            "그냥 내가 하자는 대로 하면 안 돼?",
-            "다른 사람들도 다 이렇게 사는데?"
-        };
-    }
-
-    @PostMapping("/response")
-    public String getResponse(@RequestBody String responseText) {
-        return "{\"score\": 80, \"feedback\": \"이성적이고 좋은 반박입니다!\", \"type\": \"공감형\"}";
+    @GetMapping("/api/situations")
+    public List<String> getStatementsBySituation(@RequestParam String situation) {
+        Situation sit = situationRepository.findByName(situation);
+        if (sit == null) return List.of();
+        return statementRepository.findBySituation(sit)
+                                  .stream()
+                                  .map(Statement::getContent)
+                                  .toList();
     }
 }
