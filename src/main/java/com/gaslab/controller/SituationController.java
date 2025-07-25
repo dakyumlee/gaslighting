@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/situations")
 public class SituationController {
-
     @Autowired
     private SituationRepository situationRepository;
 
-    @GetMapping("/situations")
-    public List<Situation> getAllSituations() {
+    @GetMapping
+    public List<Situation> getAll() {
         return situationRepository.findAll();
     }
 }

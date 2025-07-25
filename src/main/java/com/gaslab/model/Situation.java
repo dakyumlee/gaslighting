@@ -7,6 +7,7 @@ import lombok.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
+@Table(name = "situations")
 public class Situation {
 
     @Id
