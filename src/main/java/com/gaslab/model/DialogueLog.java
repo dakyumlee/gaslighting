@@ -1,40 +1,22 @@
 package com.gaslab.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DialogueLog {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String speaker;
-    private String content;
+    private String sender;
 
-    public DialogueLog() {
-    }
+    private String message;
 
-    public DialogueLog(String speaker, String content) {
-        this.speaker = speaker;
-        this.content = content;
-    }
-
-    public String getSpeaker() {
-        return speaker;
-    }
-
-    public void setSpeaker(String speaker) {
-        this.speaker = speaker;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
+    private LocalDateTime timestamp = LocalDateTime.now();
 }
