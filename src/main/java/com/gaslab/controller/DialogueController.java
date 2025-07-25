@@ -35,9 +35,11 @@ public class DialogueController {
             .toList();
     }
 
-    // 🔥 이거 추가! POST로 로그 저장하는 API
-    @PostMapping("/dialogue/save")
-    public void saveDialogue(@RequestBody DialogueLog log) {
-        logRepository.save(log);
+    @PostMapping("/dialogue/generate")
+    public Map<String, String> generateReply(@RequestBody Map<String, String> request) {
+        String userText = request.get("text");
+
+        String aiReply = "그래서 결국 너 탓이라는 거야.";
+        return Map.of("aiReply", aiReply);
     }
 }
