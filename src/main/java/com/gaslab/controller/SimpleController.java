@@ -6,24 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SimpleController {
     
-    @GetMapping("/")
-    public String home() {
-        return """
-            <!DOCTYPE html>
-            <html>
-            <head><title>가스라이팅 실험실</title></head>
-            <body>
-                <h1>🧪 가스라이팅 실험실 🧪</h1>
-                <p>API 테스트:</p>
-                <ul>
-                    <li><a href="/api/situations">상황 목록</a></li>
-                    <li><a href="/api/statements?situation=relationship">연인관계 발언</a></li>
-                </ul>
-                <p>채팅은 아직 구현 중...</p>
-            </body>
-            </html>
-            """;
-    }
+    // @GetMapping("/")
+    // public String home() {
+    //     return "forward:/index.html";
+    // }
     
     @GetMapping("/test")
     public String test() {
