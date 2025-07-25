@@ -27,5 +27,11 @@ public class SimpleController {
             </ul>
             <p>Oracle에서 테이블명과 데이터를 확인해주세요!</p>
             """;
+
+            
     }
+    @GetMapping("/")
+public String home() {
+    return "redirect:/index.html";
+}
 }
