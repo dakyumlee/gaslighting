@@ -100,15 +100,25 @@
       })
     }
 
-    async function generateGaslighting() {
-      const situation = document.getElementById('situation').selectedOptions[0]?.text
-      const statement = document.getElementById('statement').selectedOptions[0]?.text
-      const dialogue = document.getElementById('dialogue').selectedOptions[0]?.text
-
-      const resultDiv = document.getElementById('result')
-      resultDiv.innerText = `"${situation}" 상황에서\n상대방은 "${statement}"라고 말했고\n너는 "${dialogue}"라고 반응했어\n\n그래서 지금 이렇게 된 거야... 피이~`;
-    }
-
+   async function generateGaslighting() {
+        const situation = document.getElementById('situation').selectedOptions[0]?.text
+        const statement = document.getElementById('statement').selectedOptions[0]?.text
+        const dialogue = document.getElementById('dialogue').selectedOptions[0]?.text
+      
+        const resultDiv = document.getElementById('result')
+        const finalText = `"${situation}" 상황에서\n상대방은 "${statement}"라고 말했고\n너는 "${dialogue}"라고 반응했어\n\n그래서 지금 이렇게 된 거야... 피이~`
+        resultDiv.innerText = finalText
+      
+        await fetch('http://localhost:9090/api/dialogue/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender: 'user',
+            message: finalText
+          })
+        })
+      }
+      
     fetchOptions('/api/situations', 'situation')
     fetchOptions('/api/statements', 'statement')
     fetchOptions('/api/dialogues', 'dialogue')

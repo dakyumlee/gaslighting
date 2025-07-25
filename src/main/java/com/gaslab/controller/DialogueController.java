@@ -24,11 +24,20 @@ public class DialogueController {
 
     @GetMapping("/dialogue/logs")
     public List<Map<String, String>> getLogs() {
-        return logRepository.findAllByOrderByTimestampAsc().stream()
+        List<DialogueLog> logs = logRepository.findAllByOrderByTimestampAsc();
+        if (logs == null || logs.isEmpty()) return List.of();
+
+        return logs.stream()
             .map(log -> Map.of(
                 "sender", log.getSender(),
                 "message", log.getMessage()
             ))
             .toList();
+    }
+
+    // 🔥 이거 추가! POST로 로그 저장하는 API
+    @PostMapping("/dialogue/save")
+    public void saveDialogue(@RequestBody DialogueLog log) {
+        logRepository.save(log);
     }
 }
