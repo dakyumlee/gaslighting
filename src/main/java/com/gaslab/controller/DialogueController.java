@@ -107,7 +107,6 @@ public class DialogueController {
             "말을 그렇게 하면 내가 나쁜 사람이 되는 거야?"
         };
         
-        // 상황별 맞춤 응답 추가
         if ("relationship".equals(situation)) {
             String[] relationshipResponses = {
                 "사랑한다면서 왜 이렇게 날 힘들게 해?",
