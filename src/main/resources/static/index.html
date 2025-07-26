@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ff8989">
   <title>가스라이팅 실험실</title>
   <style>
     @font-face {
@@ -11,132 +13,513 @@
       font-style: normal;
     }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
       font-family: 'ChosunGu', sans-serif;
       background-color: #fff7f0;
-      margin: 0;
-      padding: 0;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
     }
 
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
+      height: 100dvh;
       max-width: 600px;
-      margin: auto;
-      padding: 20px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ff8989 0%, #ff6b6b 100%);
+      color: white;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 10px;
+      font-size: 1.2rem;
+      font-weight: normal;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .situation-tabs {
+      display: flex;
+      background: #f8f8f8;
+      padding: 0.5rem;
+      gap: 0.5rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+      background: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-family: 'ChosunGu';
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .tab.active {
+      background: #ff8989;
+      color: white;
     }
 
     .chat-window {
       flex: 1;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
+      padding: 1rem;
       background-color: #fff3f3;
-      border-radius: 12px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .message {
-      max-width: 70%;
-      padding: 10px 15px;
-      margin: 10px 0;
-      border-radius: 15px;
-      font-size: 1rem;
-      white-space: pre-line;
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      word-break: keep-all;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .ai {
       background: #ffd2d2;
       align-self: flex-start;
+      margin-right: auto;
+      border-bottom-left-radius: 4px;
     }
 
     .user {
       background: #c7ffd2;
       align-self: flex-end;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: #ffd2d2;
+      border-radius: 18px;
+      margin: 0.5rem 0;
+      max-width: 80px;
+    }
+
+    .typing-indicator span {
+      height: 8px;
+      width: 8px;
+      background: #999;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    .input-area {
+      background: white;
+      padding: 0.75rem;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     }
 
     .input-box {
       display: flex;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 0.5rem;
+      align-items: center;
     }
 
     input {
       flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
+      padding: 0.75rem 1rem;
+      border-radius: 25px;
+      border: 2px solid #f0f0f0;
       font-family: 'ChosunGu';
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #ff8989;
     }
 
     button {
-      padding: 12px 20px;
+      padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: 12px;
-      background-color: #ff8989;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #ff8989 0%, #ff6b6b 100%);
       color: white;
       font-family: 'ChosunGu';
+      font-size: 1rem;
       cursor: pointer;
+      transition: transform 0.1s;
+      flex-shrink: 0;
     }
 
-    button:hover {
-      background-color: #e26b6b;
+    button:active {
+      transform: scale(0.95);
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      transition: right 0.3s;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
+
+    .menu-header {
+      background: #ff8989;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-content {
+      padding: 1rem;
+    }
+
+    .menu-item {
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .menu-item:hover {
+      background: #f8f8f8;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 999;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    .stats-modal {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 20px 20px 0 0;
+      padding: 1rem;
+      transition: bottom 0.3s;
+      z-index: 1001;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .stats-modal.show {
+      bottom: 0;
+    }
+
+    .stats-header {
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .stat-item {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 1rem;
+      }
+      
+      .message {
+        font-size: 0.9rem;
+      }
+      
+      button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .input-area {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🧪 가스라이팅 실험실 🧪</h1>
+    <div class="header">
+      <h1>🧪 가스라이팅 실험실</h1>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </div>
+
+    <div class="situation-tabs">
+      <button class="tab active" onclick="changeSituation('all')">전체</button>
+      <button class="tab" onclick="changeSituation('relationship')">연인관계</button>
+      <button class="tab" onclick="changeSituation('workplace')">직장</button>
+      <button class="tab" onclick="changeSituation('family')">가족</button>
+    </div>
 
     <div class="chat-window" id="chatWindow">
       <div class="message ai">왜 이렇게 늦게 연락했어?</div>
+      <div class="typing-indicator" id="typingIndicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
 
-    <div class="input-box">
-      <input type="text" id="userInput" placeholder="당신의 반응은?">
-      <button onclick="sendReply()">보내기</button>
+    <div class="input-area">
+      <div class="input-box">
+        <input type="text" id="userInput" placeholder="당신의 반응은?" enterkeyhint="send">
+        <button onclick="sendReply()">보내기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="menu-header">
+      <h3>메뉴</h3>
+      <button class="menu-btn" onclick="toggleMenu()">✕</button>
+    </div>
+    <div class="menu-content">
+      <div class="menu-item" onclick="showStats()">📊 통계 보기</div>
+      <div class="menu-item" onclick="clearChat()">🗑️ 대화 초기화</div>
+      <div class="menu-item" onclick="showInfo()">ℹ️ 가스라이팅이란?</div>
+      <div class="menu-item" onclick="showHelp()">🆘 도움 받기</div>
+      <div class="menu-item" onclick="shareApp()">📤 공유하기</div>
+    </div>
+  </div>
+
+  <div class="stats-modal" id="statsModal">
+    <div class="stats-header">
+      <h3>대화 통계</h3>
+      <button onclick="closeStats()">닫기</button>
+    </div>
+    <div class="stat-item">
+      <span>총 대화 수</span>
+      <span id="totalMessages">0</span>
+    </div>
+    <div class="stat-item">
+      <span>가장 많이 나온 패턴</span>
+      <span id="topPattern">-</span>
+    </div>
+    <div class="stat-item">
+      <span>위험도</span>
+      <span id="dangerLevel">-</span>
     </div>
   </div>
 
   <script>
+    let currentSituation = 'all';
+    let messageCount = 0;
+    let patterns = {};
+
+    document.getElementById('userInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendReply();
+      }
+    });
+
     function appendMessage(text, sender) {
-      const msg = document.createElement('div')
-      msg.className = 'message ' + sender
-      msg.innerText = text
-      document.getElementById('chatWindow').appendChild(msg)
-      msg.scrollIntoView({ behavior: 'smooth' })
+      const msg = document.createElement('div');
+      msg.className = 'message ' + sender;
+      msg.innerText = text;
+      
+      const typingIndicator = document.getElementById('typingIndicator');
+      chatWindow.insertBefore(msg, typingIndicator);
+      
+      msg.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      
+      if (sender === 'user') {
+        messageCount++;
+      } else {
+        analyzePattern(text);
+      }
+    }
+
+    function showTyping() {
+      document.getElementById('typingIndicator').style.display = 'flex';
+      document.getElementById('typingIndicator').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function hideTyping() {
+      document.getElementById('typingIndicator').style.display = 'none';
     }
 
     async function sendReply() {
-        const input = document.getElementById('userInput')
-        const text = input.value.trim()
-        if (!text) return
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
       
-        appendMessage(text, 'user')
+      appendMessage(text, 'user');
+      input.value = '';
       
-        await fetch('/api/dialogue/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sender: 'user', message: text })
+      showTyping();
+      
+      await fetch('/api/dialogue/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sender: 'user', message: text })
+      });
+      
+      const res = await fetch('/api/dialogue/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text: text,
+          situation: currentSituation 
         })
+      });
       
-        const res = await fetch('/api/dialogue/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
-        })
-        const data = await res.json()
-        appendMessage(data.aiReply, 'ai')
+      const data = await res.json();
       
-        input.value = ''
+      setTimeout(() => {
+        hideTyping();
+        appendMessage(data.aiReply, 'ai');
+      }, 1000 + Math.random() * 1000);
+    }
+
+    function changeSituation(situation) {
+      currentSituation = situation;
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('sideMenu');
+      const overlay = document.getElementById('overlay');
+      menu.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    function showStats() {
+      document.getElementById('totalMessages').innerText = messageCount;
+      document.getElementById('statsModal').classList.add('show');
+      toggleMenu();
+    }
+
+    function closeStats() {
+      document.getElementById('statsModal').classList.remove('show');
+    }
+
+    function clearChat() {
+      if (confirm('모든 대화를 삭제하시겠습니까?')) {
+        document.getElementById('chatWindow').innerHTML = `
+          <div class="message ai">왜 이렇게 늦게 연락했어?</div>
+          <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        `;
+        messageCount = 0;
+        patterns = {};
       }
-      
+      toggleMenu();
+    }
+
+    function showInfo() {
+      alert('가스라이팅은 타인의 심리나 상황을 교묘하게 조작해 그 사람이 스스로를 의심하게 만드는 심리적 학대입니다.\n\n이 앱은 가스라이팅을 인식하고 대처할 수 있도록 돕는 교육 목적으로 제작되었습니다.');
+      toggleMenu();
+    }
+
+    function showHelp() {
+      if (confirm('가스라이팅으로 고통받고 계신가요?\n\n한국여성의전화: 02-2263-6465\n한국가정법률상담소: 1644-7077\n\n상담 페이지로 이동하시겠습니까?')) {
+        window.open('https://www.women1366.kr/', '_blank');
+      }
+      toggleMenu();
+    }
+
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({
+          title: '가스라이팅 실험실',
+          text: '가스라이팅을 인식하고 대처하는 방법을 배워보세요',
+          url: window.location.href
+        });
+      } else {
+        alert('공유 기능이 지원되지 않는 브라우저입니다.\n\nURL: ' + window.location.href);
+      }
+      toggleMenu();
+    }
+
+    function analyzePattern(text) {
+      if (text.includes('네 탓') || text.includes('너 때문')) patterns['책임전가'] = (patterns['책임전가'] || 0) + 1;
+      if (text.includes('예민') || text.includes('유난')) patterns['감정무효화'] = (patterns['감정무효화'] || 0) + 1;
+      if (text.includes('기억') || text.includes('착각')) patterns['현실왜곡'] = (patterns['현실왜곡'] || 0) + 1;
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
   </script>
 </body>
 </html>
